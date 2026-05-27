@@ -1,91 +1,121 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil Público</title>
+    <title>Perfil Público - Resource Vault</title>
+    
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem("vault-theme") || "dark";
+            document.documentElement.setAttribute("data-theme", savedTheme);
+        })();
+    </script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
-    <div class="container" style="padding:2rem 1rem;">
-        <div class="card" style="max-width:850px;margin:auto;">
-            <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <i class="fa-solid fa-vault"></i> Resource<span>Vault</span>
+        </a>
+        <ul class="nav-links"></ul>
+    </nav>
+
+    <main class="main-container">
+        
+        <div class="card" style="max-width:850px; margin: auto;">
+            <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
                 <img id="public-avatar" src="" 
-                     style="width:110px;height:110px;border-radius:50%;object-fit:cover;border:4px solid #3b82f6;">
+                     style="width:110px; height:110px; border-radius:50%; object-fit:cover; border:4px solid var(--accent);">
 
                 <div>
-                    <h1 id="public-username" style="margin:0;"></h1>
-                    <p id="public-email" style="opacity:0.7;margin-top:0.5rem;"></p>
+                    <h1 id="public-username" style="margin:0; font-weight: 700;"></h1>
+                    <p id="public-email" style="opacity:0.7; margin-top:0.5rem; color: var(--text-secondary);"></p>
                 </div>
             </div>
         </div>
 
-        <div class="card" style="max-width:850px;margin:2rem auto;">
-            <h2 style="margin-bottom:1.5rem;">
-                <i class="fa-solid fa-folder-open"></i> Recursos públicos
+        <div class="card" style="max-width:850px; margin:2rem auto;">
+            <h2 style="margin-bottom:1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-folder-open" style="color: var(--accent);"></i> Recursos públicos
             </h2>
 
-            <div id="public-resources"
-                 style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;">
+            <div id="public-resources" class="resource-grid"></div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Resource Vault - Centralización de Enlaces Académicos Híbridos.</p>
+    </footer>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const userParam = new URLSearchParams(window.location.search).get("user");
+
+        if(!userParam){
+            window.location.href = "dashboard.html";
+            return;
+        }
+
+        const users = JSON.parse(localStorage.getItem("vault_users_registry")) || [];
+        const resources = JSON.parse(localStorage.getItem("vault_public_resources")) || [];
+
+        const user = users.find(u => u.email === userParam || u.username === userParam);
+
+        if(!user){
+            alert("Usuario no encontrado");
+            window.location.href = "dashboard.html";
+            return;
+        }
+
+        document.getElementById("public-avatar").src = user.avatar || "https://i.pravatar.cc/150";
+        document.getElementById("public-username").innerText = user.username;
+        document.getElementById("public-email").innerText = user.email;
+
+        const filtered = resources.filter(r =>
+            r.uploaderEmail === user.email || r.uploader === user.username
+        );
+
+        const container = document.getElementById("public-resources");
+
+        if(filtered.length === 0){
+            container.style.display = "block"; // Cambia temporalmente para centrar el mensaje vacío
+            container.innerHTML = "<p style='color: var(--text-secondary); text-align: center; padding: 1rem;'>Este usuario aún no ha publicado recursos públicos.</p>";
+            return;
+        }
+
+        // Renderizado usando las clases nativas (.res-card, .res-badge, etc) del sistema global
+        container.innerHTML = filtered.map(r => `
+            <div class="card res-card">
+                <div class="res-header">
+                    <span class="res-badge">
+                        Público / ${r.category}
+                    </span>
+                </div>
+
+                <h3 style="margin-top:1rem; font-size: 1.15rem;">${r.title}</h3>
+
+                <p style="color: var(--text-secondary); font-size:0.92rem; margin: 0.5rem 0 1.5rem; flex-grow:1;">
+                    ${r.desc}
+                </p>
+
+                <a href="${r.url}" target="_blank" class="btn" style="width:100%; text-align: center;">
+                    <i class="fa-solid fa-up-right-from-square"></i>
+                    Abrir recurso
+                </a>
             </div>
-        </div>
-    </div>
+        `).join("");
+    });
+    </script>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const userParam = new URLSearchParams(window.location.search).get("user");
-
-    if(!userParam){
-        window.location.href = "dashboard.html";
-        return;
-    }
-
-    const users = JSON.parse(localStorage.getItem("vault_users_registry")) || [];
-    const resources = JSON.parse(localStorage.getItem("vault_public_resources")) || [];
-
-    const user = users.find(u => u.email === userParam || u.username === userParam);
-
-    if(!user){
-        alert("Usuario no encontrado");
-        window.location.href = "dashboard.html";
-        return;
-    }
-
-    document.getElementById("public-avatar").src = user.avatar || "https://i.pravatar.cc/150";
-    document.getElementById("public-username").innerText = user.username;
-    document.getElementById("public-email").innerText = user.email;
-
-    const filtered = resources.filter(r =>
-        r.uploaderEmail === user.email || r.uploader === user.username
-    );
-
-    const container = document.getElementById("public-resources");
-
-    if(filtered.length === 0){
-        container.innerHTML = "<p>Este usuario aún no ha publicado recursos.</p>";
-        return;
-    }
-
-    container.innerHTML = filtered.map(r => `
-        <div class="card">
-            <span class="res-badge">
-                Público / ${r.category}
-            </span>
-
-            <h3 style="margin-top:1rem;">${r.title}</h3>
-
-            <p style="opacity:0.8;font-size:0.92rem;">
-                ${r.desc}
-            </p>
-
-            <a href="${r.url}" target="_blank" class="btn" style="width:100%;">
-                <i class="fa-solid fa-up-right-from-square"></i>
-                Abrir recurso
-            </a>
-        </div>
-    `).join("");
-});
-</script>
+    <script src="js/app.js"></script>
 </body>
 </html>
