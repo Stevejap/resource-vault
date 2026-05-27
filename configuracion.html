@@ -35,18 +35,17 @@
     <!-- Componente de Tema -->
     <div style="margin-bottom: 2rem;">
         <h3>Cambiar Aspecto Visual</h3>
-        <p style="font-size:0.9rem; margin-bottom: 0.75rem;">Alterna entre los esquemas de color oficiales.</p>
+        <p style="font-size:0.9rem; margin-bottom: 0.75rem;">Alterna entre los esquemas de color.</p>
         <div style="display:flex; gap:1rem;">
             <button class="btn" style="background:#27272a;" onclick="setThemeScheme('dark')"><i class="fa-solid fa-moon"></i> Aspecto Oscuro</button>
             <button class="btn" style="background:#e4e4e7; color:#121214; border:1px solid #ccc;" onclick="setThemeScheme('light')"><i class="fa-solid fa-sun"></i> Aspecto Claro</button>
         </div>
     </div>
 
-    <!-- Requisito: Sigue habiendo la opción de eliminar todos los recursos locales -->
     <div style="border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
-        <h3 style="color:var(--danger);">Zona de Peligro (Datos Locales)</h3>
-        <p style="font-size:0.9rem; margin-bottom: 1rem;">Esta acción purgará de forma definitiva todos los enlaces indexados en tu LocalStorage privado.</p>
-        <button id="btn-purge" class="btn btn-danger" style="width: 100%; padding:0.75rem;"><i class="fa-solid fa-trash-can"></i> Eliminar Todos los Recursos Locales</button>
+        <h3 style="color:var(--danger);">Zona de Peligro (Bóveda Local)</h3>
+        <p style="font-size:0.9rem; margin-bottom: 1rem;">Esta acción eliminara de forma definitiva todos los recursos de tu bóveda local</p>
+        <button id="btn-purge" class="btn btn-danger" style="width: 100%; padding:0.75rem;"><i class="fa-solid fa-trash-can"></i> Vaciar toda la bóveda</button>
     </div>
 </div>
 
