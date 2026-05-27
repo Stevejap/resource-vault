@@ -22,41 +22,66 @@
         <a href="index.html" class="nav-logo">
             <i class="fa-solid fa-vault"></i> Resource<span>Vault</span>
         </a>
-        <ul class="nav-links"></ul>
+        <ul class="nav-links">
+            <li><a href="index.html" class="active">Inicio</a></li>
+            <li><a href="dashboard.html">Bóveda</a></li>
+            <li><a href="nuevo-recurso.html">+ Añadir</a></li>
+            <li><a href="perfil.html">Perfil</a></li>
+            <li><a href="configuracion.html"><i class="fa-solid fa-gear"></i></a></li>
+            <li><a href="login.html" id="nav-login-link"><i class="fa-solid fa-user"></i> Acceder</a></li>
+        </ul>
     </nav>
 
     <main class="main-container">
         
-        
-<div class="card" style="text-align: center; padding: 4rem 2rem;">
-    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Centraliza tus Recursos Digitales</h1>
-    <p style="max-width: 650px; margin: 0 auto 2rem; color: var(--text-secondary);">
-        Resource Vault es una aplicación web diseñada para organizar, clasificar y acceder eficientemente a tus enlaces académicos, cursos, artículos y documentación desde un solo panel rápidamente.
-    </p>
-    <div style="display: flex; gap: 1rem; justify-content: center;" id="home-actions">
-        <a href="dashboard.html" class="btn"><i class="fa-solid fa-folder-open"></i> Ver Bóveda de Recursos</a>
-        <a href="login.html" class="btn btn-secondary" id="access-area-btn">Acceder</a>
-    </div>
-</div>
+        <div style="text-align: center; padding: 4rem 1rem;">
+            <h1 style="font-size: 3.5rem; margin-bottom: 1rem; font-weight: 700;">Centraliza tus <span>Recursos Digitales</span></h1>
+            <p style="color: var(--text-secondary); font-size: 1.2rem; max-width: 600px; margin: 0 auto 2rem;">
+                Resource Vault es una aplicación web diseñada para organizar, clasificar y acceder eficientemente a tus enlaces académicos, cursos, artículos y documentación desde un solo panel rápido.
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center;" id="home-actions">
+                <a href="dashboard.html" class="btn" style="font-size: 1.1rem; padding: 0.8rem 1.8rem;"><i class="fa-solid fa-folder-open"></i> Explorar Bóveda</a>
+                <a href="login.html" class="btn btn-secondary" id="access-area-btn" style="font-size: 1.1rem; padding: 0.8rem 1.8rem;">Crear Cuenta</a>
+            </div>
+        </div>
 
-    
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+            <div class="card" style="text-align: center; padding: 2rem;">
+                <div style="font-size: 2.5rem; color: var(--accent); margin-bottom: 1rem;"><i class="fa-solid fa-link"></i></div>
+                <h3>Solo Links</h3>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;">Diseñado exclusivamente para almacenar y redirigir eficientemente sin saturar almacenamiento interno.</p>
+            </div>
+            <div class="card" style="text-align: center; padding: 2rem;">
+                <div style="font-size: 2.5rem; color: var(--accent); margin-bottom: 1rem;"><i class="fa-solid fa-database"></i></div>
+                <h3>Base de Datos Local</h3>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;">Utiliza la tecnología de LocalStorage de tu navegador para persistir toda tu información de forma 100% gratuita y offline.</p>
+            </div>
+            <div class="card" style="text-align: center; padding: 2rem;">
+                <div style="font-size: 2.5rem; color: var(--accent); margin-bottom: 1rem;"><i class="fa-solid fa-palette"></i></div>
+                <h3>Estilo CurseForge</h3>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;">Interfaz oscura inmersiva ideal para desarrolladores y estudiantes de TI, optimizada contra la fatiga visual.</p>
+            </div>
+        </div>
+
     </main>
 
     <footer>
-        <p>&copy; 2026 Resource Vault - Aplicacion web de centralización de Enlaces.</p>
+        <p>&copy; 2026 Resource Vault - Aplicación web de centralización de Enlaces.</p>
     </footer>
 
-    
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const sessionActive = localStorage.getItem("vault_session") === "true";
-        const accessBtn = document.getElementById("access-area-btn");
-        if (sessionActive && accessBtn) {
-            accessBtn.style.display = "none";
-        }
-    });
-</script>
-
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Lógica para ocultar botón de acceso si ya hay sesión
+            const sessionActive = localStorage.getItem("vault_session") === "true";
+            const accessBtn = document.getElementById("access-area-btn");
+            const navLogin = document.getElementById("nav-login-link");
+            
+            if (sessionActive) {
+                if (accessBtn) accessBtn.style.display = "none";
+                if (navLogin) navLogin.style.display = "none";
+            }
+        });
+    </script>
     <script src="js/app.js"></script>
 </body>
 </html>
