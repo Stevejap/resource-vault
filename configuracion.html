@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Sistema - Resource Vault</title>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem("vault-theme") || "dark";
+            document.documentElement.setAttribute("data-theme", savedTheme);
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <i class="fa-solid fa-vault"></i> Resource<span>Vault</span>
+        </a>
+        <ul class="nav-links"></ul>
+    </nav>
+
+    <main class="main-container">
+        
+        
+<div class="card" style="max-width: 600px; margin: 2rem auto;">
+    <h2><i class="fa-solid fa-sliders"></i> Panel de Configuración General</h2>
+    <p style="color:var(--text-secondary); margin-bottom: 1.5rem;">Administra las preferencias visuales del sistema y tus datos locales de manera directa.</p>
+    
+    <!-- Componente de Tema -->
+    <div style="margin-bottom: 2rem;">
+        <h3>Cambiar Aspecto Visual</h3>
+        <p style="font-size:0.9rem; margin-bottom: 0.75rem;">Alterna entre los esquemas de color oficiales.</p>
+        <div style="display:flex; gap:1rem;">
+            <button class="btn" style="background:#27272a;" onclick="setThemeScheme('dark')"><i class="fa-solid fa-moon"></i> Aspecto Oscuro</button>
+            <button class="btn" style="background:#e4e4e7; color:#121214; border:1px solid #ccc;" onclick="setThemeScheme('light')"><i class="fa-solid fa-sun"></i> Aspecto Claro</button>
+        </div>
+    </div>
+
+    <!-- Requisito: Sigue habiendo la opción de eliminar todos los recursos locales -->
+    <div style="border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+        <h3 style="color:var(--danger);">Zona de Peligro (Datos Locales)</h3>
+        <p style="font-size:0.9rem; margin-bottom: 1rem;">Esta acción purgará de forma definitiva todos los enlaces indexados en tu LocalStorage privado.</p>
+        <button id="btn-purge" class="btn btn-danger" style="width: 100%; padding:0.75rem;"><i class="fa-solid fa-trash-can"></i> Eliminar Todos los Recursos Locales</button>
+    </div>
+</div>
+
+<script>
+    function setThemeScheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("vault-theme", theme);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("btn-purge").addEventListener("click", () => {
+            if(confirm("🚨 ¿Estás totalmente seguro de limpiar tu bóveda local? Esta operación no se puede deshacer.")) {
+                localStorage.removeItem("vault_resources");
+                localStorage.removeItem("vault_local_categories");
+                alert("Bóveda local vaciada por completo.");
+                window.location.href = "dashboard.html";
+            }
+        });
+    });
+</script>
+
+    
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Resource Vault - Centralización de Enlaces Académicos Híbridos.</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

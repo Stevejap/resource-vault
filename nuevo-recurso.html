@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Enlace - Resource Vault</title>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem("vault-theme") || "dark";
+            document.documentElement.setAttribute("data-theme", savedTheme);
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <i class="fa-solid fa-vault"></i> Resource<span>Vault</span>
+        </a>
+        <ul class="nav-links"></ul>
+    </nav>
+
+    <main class="main-container">
+        
+        
+<div class="card" style="max-width:620px; margin: 1.5rem auto;">
+    <h2><i class="fa-solid fa-circle-plus" style="color:var(--accent);"></i> Indexar Nuevo Recurso Tecnológico</h2>
+    <p style="margin-bottom: 1.5rem; color:var(--text-secondary);">Elige el tipo de almacenamiento y clasifica tus enlaces organizacionales.</p>
+    
+    <form id="frm-add">
+        <!-- Requisito: Opción para elegir si guardar localmente o públicamente -->
+        <div class="form-group">
+            <label>Ámbito de Destino</label>
+            <select id="res-scope" class="form-control" style="font-weight:600; border-color:var(--accent);">
+                <option value="local">Guardar Localmente (Privado en Navegador)</option>
+                <option value="public">Guardar Públicamente (Compartido en Servidor)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Título del Recurso</label>
+            <input type="text" id="res-title" class="form-control" placeholder="Ej. Documentación oficial de MySQL Workbench" required>
+        </div>
+
+        <div class="form-group">
+            <label>URL Directa</label>
+            <input type="url" id="res-url" class="form-control" placeholder="https://dev.mysql.com" required>
+        </div>
+
+        <!-- Requisito: Gestión diferenciada de categorías -->
+        <div class="form-group" id="wrapper-cat-select">
+            <label>Seleccionar Categoría</label>
+            <select id="res-category" class="form-control"></select>
+        </div>
+
+        <!-- Requisito: Poder crear categorías SOLO cuando se selecciona guardar localmente -->
+        <div class="form-group" id="wrapper-custom-cat" style="display:block;">
+            <label style="color:var(--accent);">✨ ¿Deseas añadir una nueva categoría personalizada?</label>
+            <div style="display:flex; gap:0.5rem;">
+                <input type="text" id="custom-cat-name" class="form-control" placeholder="Ej. Microservicios">
+                <button type="button" id="btn-add-cat" class="btn btn-secondary">Crear</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Resumen / Descripción</label>
+            <textarea id="res-desc" class="form-control" rows="4" placeholder="Indica detalles de utilidad rápida..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn" style="width:100%; padding:0.8rem;"><i class="fa-solid fa-square-plus"></i> Registrar en la Bóveda</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const scope = document.getElementById("res-scope");
+        const catSelect = document.getElementById("res-category");
+        const customCatWrapper = document.getElementById("wrapper-custom-cat");
+        const customCatInput = document.getElementById("custom-cat-name");
+        const btnAddCat = document.getElementById("btn-add-cat");
+        const form = document.getElementById("frm-add");
+
+        function updateCategoryOptions() {
+            catSelect.innerHTML = "";
+            if(scope.value === "local") {
+                // Permitir personalizadas desde LocalStorage
+                customCatWrapper.style.display = "block";
+                const localCats = JSON.parse(localStorage.getItem("vault_local_categories")) || ["documentacion", "cursos", "articulos"];
+                localCats.forEach(c => {
+                    catSelect.innerHTML += `<option value="${c}">${c.toUpperCase()}</option>`;
+                });
+            } else {
+                // Requisito: Cuando se selecciona públicamente, solo dar a elegir entre categorías por defecto
+                customCatWrapper.style.display = "none";
+                const defaultPublicCats = ["documentacion", "cursos", "articulos"];
+                defaultPublicCats.forEach(c => {
+                    catSelect.innerHTML += `<option value="${c}">${c.toUpperCase()}</option>`;
+                });
+            }
+        }
+
+        // Crear nueva categoría local en tiempo real
+        btnAddCat.addEventListener("click", () => {
+            const val = customCatInput.value.trim().toLowerCase();
+            if(!val) return;
+            
+            let localCats = JSON.parse(localStorage.getItem("vault_local_categories")) || ["documentacion", "cursos", "articulos"];
+            if(!localCats.includes(val)) {
+                localCats.push(val);
+                localStorage.setItem("vault_local_categories", JSON.stringify(localCats));
+                alert("Categoría local creada con éxito.");
+                customCatInput.value = "";
+                updateCategoryOptions();
+                catSelect.value = val;
+            } else {
+                alert("La categoría ya existe.");
+            }
+        });
+
+        scope.addEventListener("change", updateCategoryOptions);
+        updateCategoryOptions(); // Carga inicial
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const title = document.getElementById("res-title").value.trim();
+            const url = document.getElementById("res-url").value.trim();
+            const desc = document.getElementById("res-desc").value.trim();
+            const category = catSelect.value;
+            
+            const sessionUser = JSON.parse(localStorage.getItem("vault_user")) || { username: "Anónimo" };
+
+            if(scope.value === "local") {
+                const locals = JSON.parse(localStorage.getItem("vault_resources")) || [];
+                locals.unshift({ id: "local-"+Date.now(), title, url, desc, category, date: new Date().toISOString().split('T')[0] });
+                localStorage.setItem("vault_resources", JSON.stringify(locals));
+                alert("Guardado localmente en tu bóveda.");
+            } else {
+                const publics = JSON.parse(localStorage.getItem("vault_public_resources")) || [];
+                publics.unshift({ id: "public-"+Date.now(), title, url, desc, category, uploader: sessionUser.username, uploaderEmail: sessionUser.email || "", date: new Date().toISOString().split('T')[0] });
+                localStorage.setItem("vault_public_resources", JSON.stringify(publics));
+                alert("Publicado globalmente en la comunidad académica.");
+            }
+
+            window.location.href = "dashboard.html";
+        });
+    });
+</script>
+
+    
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Resource Vault - Centralización de Enlaces Académicos Híbridos.</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

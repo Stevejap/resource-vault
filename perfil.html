@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Resource Vault</title>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem("vault-theme") || "dark";
+            document.documentElement.setAttribute("data-theme", savedTheme);
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <i class="fa-solid fa-vault"></i> Resource<span>Vault</span>
+        </a>
+        <ul class="nav-links"></ul>
+    </nav>
+
+    <main class="main-container">
+        
+        <div class="card" style="max-width:550px; margin:3rem auto; text-align:center;">
+            <div id="profile-view-mode">
+                <img id="prof-img" src="" alt="Avatar" style="width:100px; height:100px; border-radius:50%; border:3px solid var(--accent); object-fit:cover; margin-bottom:1rem; transition: transform 0.2s;">
+                <h2 id="prof-user">Usuario</h2>
+                <p id="prof-email" style="color:var(--text-secondary); margin-bottom:0.5rem;"></p>
+                <p id="prof-bio" style="font-style:italic; color:var(--text-secondary); margin-bottom:1.5rem; max-width:420px; margin-inline:auto; line-height:1.4;"></p>
+                <button id="btn-edit-profile" class="btn btn-secondary" style="margin-bottom:1rem; padding:0.5rem 1.2rem;"><i class="fa-solid fa-user-pen"></i> Editar Información Personal</button>
+            </div>
+
+            <div id="profile-edit-mode" style="display:none; text-align:left; border-top:1px solid var(--border-color); padding-top:1.5rem;">
+                <h3 style="margin-bottom:1rem;"><i class="fa-solid fa-gears"></i> Modificar Datos Personales</h3>
+                <form id="frm-edit-profile">
+                    <div class="form-group">
+                        <label>Nombre Completo / Nickname</label>
+                        <input type="text" id="edit-username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Sobre Mí (Biografía)</label>
+                        <textarea id="edit-bio" class="form-control" rows="3" placeholder="Describe tus intereses académicos..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label style="margin-bottom:0.75rem; display:block;">Selecciona una Foto de Perfil Ilustrativa</label>
+                        <div class="avatar-selector-grid" style="display:flex; gap:0.75rem; justify-content:center; align-items:center; flex-wrap:wrap; padding:0.5rem; background:var(--bg-main); border-radius:var(--radius);">
+                            <img class="avatar-option" data-url="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" style="width:55px; height:55px; border-radius:50%; cursor:pointer; border:3px solid transparent; transition: all 0.2s;">
+                            <img class="avatar-option" data-url="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80" style="width:55px; height:55px; border-radius:50%; cursor:pointer; border:3px solid transparent; transition: all 0.2s;">
+                            <img class="avatar-option" data-url="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80" style="width:55px; height:55px; border-radius:50%; cursor:pointer; border:3px solid transparent; transition: all 0.2s;">
+                            <img class="avatar-option" data-url="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80" style="width:55px; height:55px; border-radius:50%; cursor:pointer; border:3px solid transparent; transition: all 0.2s;">
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:1rem; margin-top:1.5rem;">
+                        <button type="button" id="btn-cancel-edit" class="btn btn-secondary" style="flex:1;">Cancelar</button>
+                        <button type="submit" class="btn" style="flex:1;">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+
+            <div style="border-top:1px solid var(--border-color); padding-top:1.25rem; text-align:left; margin-top:1.5rem;">
+                <h4 style="margin-bottom:0.5rem;"><i class="fa-solid fa-chart-simple"></i> Resumen Operacional</h4>
+                <ul style="list-style:none; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; font-size:0.95rem;">
+                    <li><i class="fa-solid fa-folder-open" style="color:var(--accent);"></i> Enlaces Locales: <strong id="stat-total">0</strong></li>
+                </ul>
+            </div>
+        </div>
+
+        <script>
+            // Inicialización segura del usuario actual
+            let currentUser = JSON.parse(localStorage.getItem("vault_user")) || {
+                username: "Usuario",
+                email: "usuario@example.com",
+                bio: "",
+                avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80"
+            };
+            let selectedAvatarUrl = currentUser.avatar;
+
+            function loadProfileData(){
+                document.getElementById("prof-user").textContent = currentUser.username;
+                document.getElementById("prof-email").textContent = currentUser.email;
+                document.getElementById("prof-bio").textContent = currentUser.bio || "";
+                document.getElementById("prof-img").src = currentUser.avatar || selectedAvatarUrl;
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                loadProfileData();
+                
+                // Ejecuta la renderización de estadísticas si la función existe en app.js
+                if (typeof renderUserResources === "function") {
+                    renderUserResources(currentUser.email, currentUser.username);
+                }
+
+                const viewMode = document.getElementById("profile-view-mode");
+                const editMode = document.getElementById("profile-edit-mode");
+                const btnEdit = document.getElementById("btn-edit-profile");
+                const btnCancel = document.getElementById("btn-cancel-edit");
+                const formEdit = document.getElementById("frm-edit-profile");
+                const avatarOptions = document.querySelectorAll(".avatar-option");
+
+                if (btnEdit) btnEdit.style.display = "inline-flex";
+
+                btnEdit.addEventListener("click", () => {
+                    document.getElementById("edit-username").value = currentUser.username;
+                    document.getElementById("edit-bio").value = currentUser.bio || "";
+                    selectedAvatarUrl = currentUser.avatar;
+                    highlightAvatar(selectedAvatarUrl);
+                    
+                    viewMode.style.display = "none";
+                    editMode.style.display = "block";
+                });
+
+                btnCancel.addEventListener("click", () => {
+                    editMode.style.display = "none";
+                    viewMode.style.display = "block";
+                });
+
+                avatarOptions.forEach(img => {
+                    img.addEventListener("click", () => {
+                        selectedAvatarUrl = img.getAttribute("data-url");
+                        highlightAvatar(selectedAvatarUrl);
+                    });
+                });
+
+                function highlightAvatar(url) {
+                    avatarOptions.forEach(img => {
+                        if (img.getAttribute("data-url") === url) {
+                            img.style.borderColor = "var(--accent)";
+                            img.style.transform = "scale(1.08)";
+                        } else {
+                            img.style.borderColor = "transparent";
+                            img.style.transform = "scale(1)";
+                        }
+                    });
+                }
+
+                formEdit.addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    const newUsername = document.getElementById("edit-username").value.trim();
+                    const newBio = document.getElementById("edit-bio").value.trim();
+
+                    currentUser.username = newUsername;
+                    currentUser.bio = newBio;
+                    currentUser.avatar = selectedAvatarUrl;
+                    localStorage.setItem("vault_user", JSON.stringify(currentUser));
+
+                    // Sincronización persistente en el registro global (Herencia del segundo HTML)
+                    const registry = JSON.parse(localStorage.getItem("vault_users_registry")) || [];
+                    const idx = registry.findIndex(u => u.email.toLowerCase() === currentUser.email.toLowerCase());
+                    if (idx !== -1) {
+                        registry[idx].username = newUsername;
+                        registry[idx].bio = newBio;
+                        registry[idx].avatar = selectedAvatarUrl;
+                        localStorage.setItem("vault_users_registry", JSON.stringify(registry));
+                    }
+
+                    alert("¡Tu información y foto de perfil han sido actualizadas!");
+                    loadProfileData();
+                    
+                    // Actualización de la barra superior dinámica o recarga controlada
+                    if (typeof updateNavbarDynamic === "function") {
+                        updateNavbarDynamic();
+                    } else {
+                        window.location.reload();
+                    }
+
+                    editMode.style.display = "none";
+                    viewMode.style.display = "block";
+                });
+            });
+        </script>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Resource Vault - Centralización de Enlaces Académicos Híbridos.</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autenticación Real - Resource Vault</title>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem("vault-theme") || "dark";
+            document.documentElement.setAttribute("data-theme", savedTheme);
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <i class="fa-solid fa-vault"></i> Resource<span>Vault</span>
+        </a>
+        <ul class="nav-links"></ul>
+    </nav>
+
+    <main class="main-container">
+        
+<div class="card" style="max-width: 420px; margin: 3rem auto;">
+    <h2 id="title-auth" style="text-align: center; margin-bottom: 0.5rem;">Iniciar Sesión</h2>
+    <p style="text-align: center; color: var(--text-secondary); margin-bottom: 1.5rem;">Accede con credenciales reales validadas</p>
+    <form id="frm-auth">
+        <div class="form-group" id="group-username" style="display:none;">
+            <label>Nombre de Usuario</label>
+            <input type="text" id="auth-user" class="form-control" placeholder="Ej. SteveUTP">
+        </div>
+        <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" id="auth-email" class="form-control" placeholder="alumno@utp.edu.pe" required>
+        </div>
+        <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" id="auth-pass" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn" style="width:100%; padding:0.75rem; margin-top:1rem;">Ingresar</button>
+    </form>
+    <p style="text-align:center; margin-top:1.5rem; font-size:0.9rem;">
+        <a href="#" id="btn-toggle" style="color:var(--accent); text-decoration:none;">¿No tienes cuenta? Regístrate aquí</a>
+    </p>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        if (!localStorage.getItem("vault_users_registry")) {
+            localStorage.setItem("vault_users_registry", JSON.stringify([]));
+        }
+
+        const form = document.getElementById("frm-auth");
+        const toggle = document.getElementById("btn-toggle");
+        const title = document.getElementById("title-auth");
+        const btnSubmit = form.querySelector("button[type='submit']");
+        const gUser = document.getElementById("group-username");
+        let modeLogin = true;
+
+        toggle.addEventListener("click", (e) => {
+            e.preventDefault();
+            modeLogin = !modeLogin;
+            form.reset();
+            if (modeLogin) {
+                title.innerText = "Iniciar Sesión";
+                btnSubmit.innerText = "Ingresar";
+                gUser.style.display = "none";
+                document.getElementById("auth-user").removeAttribute("required");
+                toggle.innerText = "¿No tienes cuenta? Regístrate aquí";
+            } else {
+                title.innerText = "Registrar Cuenta";
+                btnSubmit.innerText = "Registrarme";
+                gUser.style.display = "block";
+                document.getElementById("auth-user").setAttribute("required", "required");
+                toggle.innerText = "¿Ya tienes cuenta? Inicia sesión";
+            }
+        });
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const email = document.getElementById("auth-email").value.trim().toLowerCase();
+            const password = document.getElementById("auth-pass").value;
+            const registry = JSON.parse(localStorage.getItem("vault_users_registry")) || [];
+
+            if (modeLogin) {
+                // Validación estricta
+                const matchedUser = registry.find(u => u.email === email && u.password === password);
+                if (matchedUser) {
+                    localStorage.setItem("vault_session", "true");
+                    localStorage.setItem("vault_user", JSON.stringify({
+                        username: matchedUser.username,
+                        email: matchedUser.email,
+                        bio: matchedUser.bio || "Estudiante de la UTP en Resource Vault.",
+                        avatar: matchedUser.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80"
+                    }));
+                    alert("¡Inicio de sesión exitoso!");
+                    window.location.href = "dashboard.html";
+                } else {
+                    alert("Error: Credenciales inválidas o el usuario no existe.");
+                }
+            } else {
+                // Registro persistente real
+                const username = document.getElementById("auth-user").value.trim();
+                const exists = registry.some(u => u.email === email);
+                if (exists) {
+                    alert("Error: Este correo electrónico ya está registrado.");
+                    return;
+                }
+
+                const newUser = {
+                    username: username,
+                    email: email,
+                    password: password,
+                    bio: "Estudiante de la UTP en Resource Vault.",
+                    avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80"
+                };
+                registry.push(newUser);
+                localStorage.setItem("vault_users_registry", JSON.stringify(registry));
+
+                localStorage.setItem("vault_session", "true");
+                localStorage.setItem("vault_user", JSON.stringify({
+                    username: newUser.username,
+                    email: newUser.email,
+                    bio: newUser.bio,
+                    avatar: newUser.avatar
+                }));
+
+                alert("¡Cuenta registrada e inicio de sesión automático realizado!");
+                window.location.href = "dashboard.html";
+            }
+        });
+    });
+</script>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Resource Vault - Centralización de Enlaces Académicos Híbridos.</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
