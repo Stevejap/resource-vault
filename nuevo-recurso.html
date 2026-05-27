@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Enlace - Resource Vault</title>
+    <title>Agregar Recurso - Resource Vault</title>
     <script>
         (function() {
             const savedTheme = localStorage.getItem("vault-theme") || "dark";
@@ -29,27 +29,27 @@
         
         
 <div class="card" style="max-width:620px; margin: 1.5rem auto;">
-    <h2><i class="fa-solid fa-circle-plus" style="color:var(--accent);"></i> Indexar Nuevo Recurso Tecnológico</h2>
-    <p style="margin-bottom: 1.5rem; color:var(--text-secondary);">Elige el tipo de almacenamiento y clasifica tus enlaces organizacionales.</p>
+    <h2><i class="fa-solid fa-circle-plus" style="color:var(--accent);"></i> Añadir Nuevo Recurso</h2>
+    <p style="margin-bottom: 1.5rem; color:var(--text-secondary);">Ingresa los datos y elige donde guardar el recurso</p>
     
     <form id="frm-add">
         <!-- Requisito: Opción para elegir si guardar localmente o públicamente -->
         <div class="form-group">
-            <label>Ámbito de Destino</label>
+            <label>Tipo de guardado</label>
             <select id="res-scope" class="form-control" style="font-weight:600; border-color:var(--accent);">
-                <option value="local">Guardar Localmente (Privado en Navegador)</option>
-                <option value="public">Guardar Públicamente (Compartido en Servidor)</option>
+                <option value="local">Guardar Localmente (Bóveda Local)</option>
+                <option value="public">Guardar Públicamente (Bóveda publica)</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label>Título del Recurso</label>
-            <input type="text" id="res-title" class="form-control" placeholder="Ej. Documentación oficial de MySQL Workbench" required>
+            <label>Título</label>
+            <input type="text" id="res-title" class="form-control" placeholder="Ej. UTP+Class" required>
         </div>
 
         <div class="form-group">
             <label>URL Directa</label>
-            <input type="url" id="res-url" class="form-control" placeholder="https://dev.mysql.com" required>
+            <input type="url" id="res-url" class="form-control" placeholder="https://ejemplo.com" required>
         </div>
 
         <!-- Requisito: Gestión diferenciada de categorías -->
@@ -60,19 +60,19 @@
 
         <!-- Requisito: Poder crear categorías SOLO cuando se selecciona guardar localmente -->
         <div class="form-group" id="wrapper-custom-cat" style="display:block;">
-            <label style="color:var(--accent);">✨ ¿Deseas añadir una nueva categoría personalizada?</label>
+            <label style="color:var(--accent);">Agregar nueva categoría</label>
             <div style="display:flex; gap:0.5rem;">
-                <input type="text" id="custom-cat-name" class="form-control" placeholder="Ej. Microservicios">
+                <input type="text" id="custom-cat-name" class="form-control" placeholder="Ej. REPASOS">
                 <button type="button" id="btn-add-cat" class="btn btn-secondary">Crear</button>
             </div>
         </div>
 
         <div class="form-group">
-            <label>Resumen / Descripción</label>
-            <textarea id="res-desc" class="form-control" rows="4" placeholder="Indica detalles de utilidad rápida..." required></textarea>
+            <label>Descripción</label>
+            <textarea id="res-desc" class="form-control" rows="4" placeholder="..." required></textarea>
         </div>
 
-        <button type="submit" class="btn" style="width:100%; padding:0.8rem;"><i class="fa-solid fa-square-plus"></i> Registrar en la Bóveda</button>
+        <button type="submit" class="btn" style="width:100%; padding:0.8rem;"><i class="fa-solid fa-square-plus"></i> Guardar Recurso</button>
     </form>
 </div>
 
@@ -155,7 +155,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2026 Resource Vault - Centralización de Enlaces Académicos Híbridos.</p>
+        <p>&copy; 2026 Resource Vault - Aplicacion web de centralización de Enlaces.</p>
     </footer>
 
     <script src="js/app.js"></script>
