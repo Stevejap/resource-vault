@@ -55,7 +55,7 @@ function updateNavbarDynamic() {
     let htmlMenu = `
         <li><a href="index.html" class="${currentFile === 'index.html' ? 'active' : ''}"><i class="fa-solid fa-house"></i> Inicio</a></li>
         <li><a href="dashboard.html" class="${currentFile === 'dashboard.html' ? 'active' : ''}"><i class="fa-solid fa-database"></i> Bóveda</a></li>
-        <li><a href="nuevo-recurso.html" class="${currentFile === 'nuevo-recurso.html' ? 'active' : ''}"><i class="fa-solid fa-circle-plus"></i> + Añadir</a></li>
+        <li><a href="nuevo-recurso.html" class="${currentFile === 'nuevo-recurso.html' ? 'active' : ''}"><i class="fa-solid fa-circle-plus"></i> Añadir</a></li>
         <li><a href="configuracion.html" class="${currentFile === 'configuracion.html' ? 'active' : ''}" title="Configuración"><i class="fa-solid fa-gear"></i></a></li>
     `;
 
