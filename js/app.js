@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function initDatabase() {
-    // REQUISITO: No crear recursos locales por defecto (Iniciar vacío)
+    // Iniciar vacío
     if (!localStorage.getItem("vault_resources")) {
         localStorage.setItem("vault_resources", JSON.stringify([]));
     }
@@ -17,16 +17,16 @@ function initDatabase() {
         localStorage.setItem("vault_local_categories", JSON.stringify(defaultCats));
     }
     
-    // REQUISITO: No crear recursos públicos por defecto (Iniciar vacío)
+    // Iniciar vacío
     if (!localStorage.getItem("vault_public_resources")) {
         localStorage.setItem("vault_public_resources", JSON.stringify([]));
     }
 
-    // REQUISITO: Asegurar que no haya sesión activa por defecto si es la primera vez
+    // segurar que no haya sesión activa por defecto si es la primera vez
     if (localStorage.getItem("vault_session") === null) {
         localStorage.setItem("vault_session", "false");
     }
-    // Sincronizar Registro de usuarios real
+    // Sincronizar Registro de usuarios
     if (!localStorage.getItem("vault_users_registry")) {
         localStorage.setItem("vault_users_registry", JSON.stringify([]));
     }
@@ -38,7 +38,6 @@ function checkAddPageProtection() {
     if (currentFile === "nuevo-recurso.html") {
         const sessionActive = localStorage.getItem("vault_session") === "true";
         if (!sessionActive) {
-            alert("Acceso denegado: Debes iniciar sesión para añadir un nuevo recurso.");
             window.location.href = "login.html";
         }
     }
